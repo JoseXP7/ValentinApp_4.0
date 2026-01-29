@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+
+@theme {
+  --color-primaryRed: #6f041b;
+  --color-primaryGray: #e6e6e6;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+}
+
+
+.heart-btn {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  background-color: var(--color-red-500);
+  transform: rotate(-45deg);
+  cursor: pointer;
+  transition-duration: 400ms;
+}
+
+.heart-btn::before,
+.heart-btn::after {
+  content: "";
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  background-color: inherit;
+  border-radius: 50%;
+}
+
+.heart-btn::before {
+  top: -48px;
+  left: 0;
+}
+
+.heart-btn::after {
+  left: 48px;
+  top: 0;
+}
+
+.heart-btn > * {
+  transform: rotate(45deg);
+  
+}
+
+.heart-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #f7e4da;           /* beige rosáceo */
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.1;
+  top: 40%;
+  left: 60%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  z-index: 10;              /* POR ENCIMA DEL CORAZÓN */
+  pointer-events: none;
+}
+
+.group:hover .heart-btn {
+   background-color: #630000;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.12);
+  transform: rotate(-45deg) scale(1.02); 
+}
