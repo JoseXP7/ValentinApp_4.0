@@ -1,6 +1,6 @@
 <template>
 
-<div class="h-screen w-screen bg-cover bg-center -mt-14 transition-all duration-700 ease-out overflow-hidden relative" style="background-image: url('/src/assets/img/hero-bg.jpg');">
+<div class="h-screen w-screen bg-cover bg-center -mt-14 transition-all duration-700 ease-out overflow-hidden relative" style="background-image: url('/img/hero-bg.jpg');">
   <div class="w-full h-full max-h-150 px-6 md:px-20 flex items-start justify-center pt-25 md:pt-20">
     <div class="max-w-3xl flex h-full m-4 md:m-6">
       <div class="relative group sm:w-full md:w-1/2 bg-primaryGray/60 backdrop-blur-sm
@@ -33,7 +33,7 @@
 </div>
     </div>
     <div class="md:w-auto hidden md:block bg-red-500 h-full object-cover rounded-r-xl">
-      <img src="/src/assets/img/img-hero.jpg" alt="Hero"" class="h-full object-cover rounded-r-xl" />
+      <img src="/img/img-hero.jpg" alt="Hero"" class="h-full object-cover rounded-r-xl" />
     </div>
   </div>
   </div>

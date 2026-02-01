@@ -36,7 +36,7 @@ const open = ref(false);
           <!-- Logo -->
           <RouterLink to="/" class="shrink-0">
             <img
-              src="../assets/img/logo_horizontal.png"
+              src="/img/logo_horizontal.png"
               alt="Logo Valentin App"
               class="h-10 md:h-12"
             />
