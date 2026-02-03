@@ -1,25 +1,14 @@
 <script setup>
-import createCard from "@/components/createCard.vue";
-import { onMounted } from "vue";
-import { useAuth } from "@/composables/useAuth";
-import { useUser } from "@/composables/useUser";
-
-const { user } = useUser();
-
-const { getSession } = useAuth();
-
-onMounted(() => {
-  getSession();
-});
+import createCard from '@/components/createCard.vue'
 </script>
 
 <template>
-  <main>
+  <main
+    class="min-h-screen w-full bg-cover bg-center flex items-center justify-center md:px-6"
+    style="background-image: url('/img/hero-bg.jpg')"
+  >
     <div class="container">
-      <createCard v-if="Object.keys(user).length" :user="user" class="mt-3" />
-      <div v-else>
-        <h1>Inicia sesión enviar una carta</h1>
-      </div>
+      <createCard class="mt-3" />
     </div>
   </main>
 </template>

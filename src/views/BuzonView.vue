@@ -16,7 +16,7 @@ onMounted(() => {
 
 <template>
   <section
-    class="h-screen w-screen flex flex-col items-center justify-start overflow-hidden bg-cover bg-center md:pt-60 md:pb-110 -mt-14"
+    class="w-screen flex flex-col items-center justify-start overflow-hidden bg-cover bg-center"
     :style="`height: calc(100vh - ${navbarHeight}px); background-image: url('/img/hero-bg.jpg');`"
   >
     <CardBuzon />

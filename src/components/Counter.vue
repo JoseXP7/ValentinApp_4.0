@@ -9,9 +9,7 @@ let numUsers = ref(0)
 let numCarreras = ref(23)
 
 async function getCounters() {
-  const { count } = await supabase
-    .from('cartas')
-    .select('*', { count: 'exact' })
+  const { count } = await supabase.from('cards').select('*', { count: 'exact' })
   numCards.value = count
 }
 

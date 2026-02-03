@@ -1,41 +1,47 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { registerSchema } from '@/schemas/auth.schema'
 import { ref } from 'vue'
 import Swal from 'sweetalert2'
 
 const loading = ref(false)
-const email = ref('')
-const password = ref('')
-const emailregEx = /[^@ \t\r\n]{8,}@gmail\.com/g
-
 const { signUpWithPassw } = useAuth()
+const router = useRouter()
 
-const signup = async () => {
-  if (!emailregEx.test(email.value)) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Debes usar un correo Gmail válido',
+const form = ref({
+  email: '',
+  password: '',
+  passwordConfirm: '',
+})
+
+const errors = ref({})
+
+const submit = async () => {
+  errors.value = {}
+  loading.value = true
+
+  const result = registerSchema.safeParse(form.value)
+
+  if (!result.success) {
+    result.error.issues.forEach((issue) => {
+      const field = issue.path[0]
+      errors.value[field] = issue.message
     })
+    loading.value = false
     return
   }
 
   try {
-    loading.value = true
     await signUpWithPassw({
-      email: email.value,
-      password: password.value,
+      email: form.value.email,
+      password: form.value.password,
     })
-    Swal.fire({
-      title: 'Cuenta creada',
-      text: 'Ya puedes iniciar sesión',
-      icon: 'success',
-    })
+    router.push('/completar-perfil')
   } catch (error) {
     Swal.fire({
       icon: 'error',
-      title: 'Oops...',
+      title: 'Error al crear cuenta',
       text: error.message,
     })
   } finally {
@@ -46,7 +52,7 @@ const signup = async () => {
 
 <template>
   <div
-    class="h-screen w-screen bg-cover grid grid-cols-1 md:grid-cols-2 -mt-14"
+    class="min-h-screen w-full bg-cover grid grid-cols-1 md:grid-cols-2"
     style="background-image: url('/img/hero-bg.jpg')"
   >
     <!-- Panel izquierdo -->
@@ -71,40 +77,66 @@ const signup = async () => {
         <p class="text-gray-600 text-sm text-center mb-6">
           ¿Ya tienes cuenta?
           <RouterLink
-            to="/auth"
+            to="/login"
             class="text-primaryRed font-semibold hover:underline"
           >
             Inicia sesión
           </RouterLink>
         </p>
 
-        <form @submit.prevent="signup" class="space-y-4">
+        <form @submit.prevent="submit" class="space-y-4">
           <!-- Email -->
-          <div class="relative">
-            <i
-              class="bi bi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-primaryRed"
-            ></i>
-            <input
-              v-model="email"
-              type="email"
-              required
-              placeholder="correo@gmail.com"
-              class="w-full pl-11 pr-4 py-2 rounded-xl bg-white/60 border border-white/40 focus:ring-2 focus:ring-primaryRed focus:outline-none"
-            />
+          <div>
+            <div class="relative">
+              <i
+                class="bi bi-envelope absolute left-4 top-1/2 -translate-y-1/2 text-primaryRed"
+              ></i>
+              <input
+                v-model="form.email"
+                type="email"
+                placeholder="correo@gmail.com"
+                class="w-full pl-11 pr-4 py-2 rounded-xl bg-white/60 border border-white/40 focus:ring-2 focus:ring-primaryRed focus:outline-none"
+              />
+            </div>
+            <small v-if="errors.email" class="text-red-500 text-xs">
+              {{ errors.email }}
+            </small>
           </div>
 
           <!-- Password -->
-          <div class="relative">
-            <i
-              class="bi bi-lock absolute left-4 top-1/2 -translate-y-1/2 text-primaryRed"
-            ></i>
-            <input
-              v-model="password"
-              type="password"
-              required
-              placeholder="••••••••"
-              class="w-full pl-11 pr-4 py-2 rounded-xl bg-white/60 border border-white/40 focus:ring-2 focus:ring-primaryRed focus:outline-none"
-            />
+          <div>
+            <div class="relative">
+              <i
+                class="bi bi-lock absolute left-4 top-1/2 -translate-y-1/2 text-primaryRed"
+              ></i>
+              <input
+                v-model="form.password"
+                type="password"
+                placeholder="••••••••"
+                class="w-full pl-11 pr-4 py-2 rounded-xl bg-white/60 border border-white/40 focus:ring-2 focus:ring-primaryRed focus:outline-none"
+              />
+            </div>
+            <small v-if="errors.password" class="text-red-500 text-xs">
+              {{ errors.password }}
+            </small>
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <div class="relative">
+              <i
+                class="bi bi-lock absolute left-4 top-1/2 -translate-y-1/2 text-primaryRed"
+              ></i>
+              <input
+                v-model="form.passwordConfirm"
+                type="password"
+                placeholder="••••••••"
+                class="w-full pl-11 pr-4 py-2 rounded-xl bg-white/60 border border-white/40 focus:ring-2 focus:ring-primaryRed focus:outline-none"
+              />
+            </div>
+            <small v-if="errors.passwordConfirm" class="text-red-500 text-xs">
+              {{ errors.passwordConfirm }}
+            </small>
           </div>
 
           <!-- Botón -->
@@ -113,11 +145,7 @@ const signup = async () => {
             :disabled="loading"
             class="w-full py-2 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-400 transition flex items-center justify-center gap-2 disabled:opacity-60"
           >
-            <span v-if="!loading">Crear cuenta</span>
-            <span v-else class="flex items-center gap-2">
-              <i class="bi bi-arrow-repeat animate-spin"></i>
-              Creando...
-            </span>
+            {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
           </button>
 
           <!-- Info -->

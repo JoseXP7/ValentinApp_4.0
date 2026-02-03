@@ -27,7 +27,7 @@ let copyright = ref(year)
           <i class="bi bi-facebook text-white"></i>
         </a>
         <a
-          href="https://www.instagram.com/josephcode_87"
+          href="https://www.instagram.com/jose.grateroldev"
           class="w-9 h-9 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-400 transition"
         >
           <i class="bi bi-instagram text-white"></i>
