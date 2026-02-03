@@ -1,21 +1,28 @@
-import { useRouter } from 'vue-router'
 import { useSupabase } from '@/clients/supabase'
-import { useUser } from './useUser'
+import { useUserStore } from '@/stores/userStore'
 
 export function useAuth() {
   const { supabase } = useSupabase()
-  const { setUser } = useUser()
-  const router = useRouter()
+  const userStore = useUserStore()
 
   const getSession = async () => {
     const { data, error } = await supabase.auth.getSession()
-
     if (error) throw error
 
-    if (data.session && data.session.user) {
-      setUser(data.session.user)
+    const session = data.session
+
+    if (!session?.user) {
+      userStore.clear()
+      return null
     }
-    return data.session
+
+    // Fuente de verdad: auth.users
+    userStore.setUser(session.user)
+
+    // Cargar profile SIEMPRE que haya sesión
+    await userStore.getProfile()
+
+    return session
   }
 
   const signUpWithPassw = async ({ email, password }) => {
@@ -25,8 +32,7 @@ export function useAuth() {
     })
     if (error) throw error
 
-    setUser(data.user)
-    router.push('/')
+    userStore.setUser(data.user)
   }
 
   const loginWithPassw = async ({ email, password }) => {
@@ -36,25 +42,41 @@ export function useAuth() {
     })
     if (error) throw error
 
-    setUser(data.user)
-    router.push('/')
+    userStore.setUser(data.user)
+    await userStore.getProfile()
   }
 
-  const getUserRole = async () => {
-    const session = await getSession()
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
+  const resetPassword = async (email) => {
+    // Usa la URL de producción si está en producción, si no usa localhost
+    const redirectTo = import.meta.env.VITE_REDIRECT_URL
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    })
     if (error) throw error
-    return data.role
+  }
+
+  const resetPasswordWithToken = async (form) => {
+    const res = await supabase.auth.updateUser({
+      password: form.password,
+    })
+
+    if (res?.error) throw res.error
+  }
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut()
+    userStore.clear()
+
+    if (error) throw error
   }
 
   return {
     getSession,
     signUpWithPassw,
     loginWithPassw,
-    getUserRole,
+    signOut,
+    resetPassword,
+    resetPasswordWithToken,
   }
 }

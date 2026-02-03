@@ -1,10 +1,10 @@
 <script setup>
-import NavBar from "./components/NavBar.vue";
+import NavBar from './components/NavBar.vue'
 </script>
 
 <template>
   <NavBar />
-  <div class="overflow-hidden view-app">
+  <div class="overflow-hidden pt-16 md:pt-20">
     <RouterView v-slot="{ Component }">
       <transition name="route" mode="out-in">
         <Component :is="Component" />
@@ -14,10 +14,6 @@ import NavBar from "./components/NavBar.vue";
 </template>
 
 <style scoped>
-.view-app {
-  padding-top: 3.5em;
-}
-
 .route-enter-from {
   opacity: 0;
   transform: translateX(100px);

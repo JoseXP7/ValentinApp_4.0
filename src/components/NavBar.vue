@@ -1,26 +1,23 @@
 <script setup>
-import { useSupabase } from '@/clients/supabase'
-import { RouterLink } from 'vue-router'
-import { useUser } from '@/composables/useUser'
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/stores/userStore'
+import { RouterLink, useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 
-const { user } = useUser()
-const { supabase } = useSupabase()
-const loading = ref(false)
 const router = useRouter()
+const { signOut } = useAuth()
+const userStore = useUserStore()
 
-async function signOut() {
-  try {
-    loading.value = true
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-    router.push('/')
-  } catch (error) {
-    alert(error.message)
-  } finally {
-    loading.value = false
-  }
+const isLogged = computed(() => !!userStore.user)
+
+const handleLogout = () => {
+  open.value = false
+  logout()
+}
+
+const logout = async () => {
+  await signOut()
+  router.push('/login')
 }
 
 const open = ref(false)
@@ -51,13 +48,6 @@ const open = ref(false)
                 >Inicio</RouterLink
               >
             </li>
-            <li v-if="Object.keys(user).length">
-              <RouterLink
-                to="/enviar"
-                class="px-3 py-2 rounded-md text-gray-800 hover:text-red-500 transition"
-                >Enviar una carta</RouterLink
-              >
-            </li>
             <li>
               <RouterLink
                 to="/buzon"
@@ -74,26 +64,27 @@ const open = ref(false)
             </li>
 
             <!-- Auth buttons -->
-            <li v-if="Object.keys(user).length">
-              <button
-                @click="signOut"
-                :disabled="loading"
-                class="ml-4 px-4 py-2 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
-              >
-                Cerrar Sesión
-              </button>
-            </li>
-            <li v-else class="flex space-x-2">
+
+            <li v-if="!isLogged" class="flex space-x-2">
               <RouterLink
-                to="/auth"
+                to="/login"
                 class="px-4 py-2 rounded-full border border-red-500 text-red-500 font-semibold hover:bg-red-500 hover:text-white transition"
                 >Iniciar Sesión</RouterLink
               >
               <RouterLink
-                to="/authSignUp"
+                to="/register"
                 class="px-4 py-2 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
                 >Registrarme</RouterLink
               >
+            </li>
+
+            <li v-else>
+              <button
+                @click="logout"
+                class="px-4 py-2 rounded-full border border-red-500 text-red-500 font-semibold hover:bg-red-500 hover:text-white transition"
+              >
+                Cerrar Sesión
+              </button>
             </li>
           </ul>
 
@@ -141,13 +132,6 @@ const open = ref(false)
           >Inicio</RouterLink
         >
         <RouterLink
-          v-if="Object.keys(user).length"
-          to="/enviar"
-          class="block px-3 py-2 rounded-md text-gray-800 hover:text-red-500 transition"
-          @click="open = false"
-          >Enviar una carta</RouterLink
-        >
-        <RouterLink
           to="/buzon"
           class="block px-3 py-2 rounded-md text-gray-800 hover:text-red-500 transition"
           @click="open = false"
@@ -160,27 +144,28 @@ const open = ref(false)
           >Sobre Nosotros</RouterLink
         >
         <div class="mt-2">
-          <button
-            v-if="Object.keys(user).length"
-            @click="signOut"
-            :disabled="loading"
-            class="w-full px-4 py-2 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
-          >
-            Cerrar Sesión
-          </button>
-          <div v-else class="flex flex-col space-y-2">
+          <div class="flex flex-col space-y-2">
             <RouterLink
-              to="/auth"
+              v-if="!isLogged"
+              to="/login"
               class="w-full px-4 py-2 rounded-full border border-red-500 text-red-500 font-semibold hover:bg-red-500 hover:text-white transition"
               @click="open = false"
               >Iniciar Sesión</RouterLink
             >
             <RouterLink
-              to="/authSignUp"
+              v-if="!isLogged"
+              to="/register"
               class="w-full px-4 py-2 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
               @click="open = false"
               >Registrarme</RouterLink
             >
+            <button
+              v-else
+              @click="handleLogout()"
+              class="w-full px-4 py-2 rounded-full border border-red-500 text-red-500 font-semibold hover:bg-red-500 hover:text-white transition"
+            >
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       </div>

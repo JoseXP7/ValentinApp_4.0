@@ -21,84 +21,6 @@ const anonimato = ref(false)
 
 const { supabase } = useSupabase()
 const router = useRouter()
-
-onMounted(() => {
-  getProfile()
-})
-
-const getProfile = async () => {
-  try {
-    loading.value = true
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('username, surname, decanato, role')
-      .eq('id', user.value.id)
-      .single()
-
-    if (error) throw error
-
-    username.value = data.username
-    surname.value = data.surname
-    decanato.value = data.decanato
-    role.value = data.role
-  } catch (error) {
-    Swal.fire('Error', error.message, 'error')
-  } finally {
-    loading.value = false
-
-    if (!username.value || !surname.value) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Perfil incompleto',
-        text: 'Debes completar tu perfil antes de enviar cartas',
-      })
-      router.push('/')
-    }
-  }
-}
-
-const sendCard = async () => {
-  if (!texto.value || !destinatario.value || !destino.value) {
-    Swal.fire('Oops...', 'Debes rellenar todos los campos', 'error')
-    return
-  }
-
-  try {
-    loading.value = true
-
-    const payload = {
-      nombre: username.value,
-      apellido: surname.value,
-      texto: texto.value,
-      decanato: decanato.value,
-      id_user: user.value.id,
-      destino: destino.value,
-      destinatario: destinatario.value,
-      rol: role.value,
-    }
-
-    const { error } = await supabase.from('cartas').upsert(payload)
-    if (error) throw error
-
-    Swal.fire('¡Carta enviada!', 'Revisa el buzón 💌', 'success')
-    texto.value = ''
-    destinatario.value = ''
-  } catch (error) {
-    Swal.fire('Error', error.message, 'error')
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleIncognito = () => {
-  anonimato.value = !anonimato.value
-  if (anonimato.value) {
-    username.value = 'Anónimo'
-    surname.value = '🕵️'
-  } else {
-    getProfile()
-  }
-}
 </script>
 
 <template>
@@ -189,17 +111,12 @@ const handleIncognito = () => {
 
         <!-- Incognito -->
         <div class="flex items-start gap-2">
-          <input
-            id="incognito"
-            type="checkbox"
-            class="mt-1 accent-red-500"
-            @change="handleIncognito"
-          />
-          <label for="incognito" class="text-sm text-gray-700">
-            Modo incógnito 🕵️
-            <p v-if="anonimato" class="text-xs text-gray-500 mt-1">
-              Tu nombre aparecerá como “Anónimo”
-            </p>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" value="" />
+            <div
+              class="group peer bg-white rounded-full duration-300 w-10 h-4 ring-2 ring-gray-500 after:duration-300 after:bg-gray-500 peer-checked:after:bg-red-500 peer-checked:ring-red-500 after:rounded-full after:absolute after:h-3 after:w-3 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-5 peer-hover:after:scale-95"
+            ></div>
+            <span class="ml-2 text-sm text-gray-700">Modo incógnito 🕵️</span>
           </label>
         </div>
 

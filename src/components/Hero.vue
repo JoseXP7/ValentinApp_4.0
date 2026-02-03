@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen w-screen bg-cover bg-center -mt-14 transition-all duration-700 ease-out overflow-hidden relative"
+    class="h-screen w-screen bg-cover bg-center transition-all duration-700 ease-out overflow-hidden relative"
     style="background-image: url('/img/hero-bg.jpg')"
   >
     <div
@@ -26,15 +26,17 @@
             Escribe, envía y guarda mensajes que importan. Porque algunas
             palabras merecen quedarse.
           </p>
-          <div
-            class="absolute z-50 bottom-28 md:bottom-10 right-0 translate-x-12 group cursor-pointer select-none"
-          >
+          <RouterLink to="enviar">
             <div
-              class="heart-btn flex items-center justify-center text-white text-sm font-semibold shadow-xl shadow-red-500/40 transition group-hover:scale-110"
+              class="absolute z-50 bottom-28 md:bottom-10 right-0 translate-x-12 group cursor-pointer select-none"
             >
-              <span class="heart-text">Escribir<br />mi carta</span>
+              <div
+                class="heart-btn flex items-center justify-center text-white text-sm font-semibold shadow-xl shadow-red-500/40 transition group-hover:scale-110"
+              >
+                <span class="heart-text">Escribir<br />mi carta</span>
+              </div>
             </div>
-          </div>
+          </RouterLink>
         </div>
         <div
           class="md:w-auto hidden md:block bg-red-500 h-full object-cover rounded-r-xl"
