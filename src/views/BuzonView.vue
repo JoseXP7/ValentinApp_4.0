@@ -100,8 +100,9 @@ onMounted(() => {
       >
         <h2 class="text-2xl font-bold text-primaryRed mb-4">Buzón cerrado</h2>
         <p class="text-gray-700">
-          Actualmente no hay cartas disponibles. El buzón está cerrado por el
-          momento. ¡Gracias por tu comprensión!
+          El buzón está cerrado por el momento hasta el 14 de Febrero, puedes
+          seguir enviando cartas, las estaremos revisando. ¡Gracias por tu
+          comprensión!
         </p>
       </div>
       <!-- <Card :cards="filteredCards" /> -->
