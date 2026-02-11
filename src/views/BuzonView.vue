@@ -63,7 +63,8 @@ const loadCards = async () => {
 }
 
 onMounted(() => {
-  loadCards()
+  cards.value = []
+  // loadCards()
 })
 </script>
 
@@ -92,13 +93,25 @@ onMounted(() => {
 
     <!-- 💌 LISTA -->
     <div class="w-full max-w-6xl mt-10 px-6 pb-20">
-      <Card :cards="filteredCards" />
+      <!--Aviso de buzon cerrado-->
+      <div
+        v-if="cards.length === 0 && !loading"
+        class="bg-white/80 backdrop-blur-md rounded-xl p-6 text-center shadow-lg"
+      >
+        <h2 class="text-2xl font-bold text-primaryRed mb-4">Buzón cerrado</h2>
+        <p class="text-gray-700">
+          El buzón está cerrado por el momento hasta el 14 de Febrero, puedes
+          seguir enviando cartas, las estaremos revisando. ¡Gracias por tu
+          comprensión!
+        </p>
+      </div>
+      <!-- <Card :cards="filteredCards" /> -->
     </div>
 
     <!-- Estado vacío -->
-    <p v-if="filteredCards.length === 0" class="text-white/80 mt-10 text-lg">
+    <!-- <p v-if="filteredCards.length === 0" class="text-white/80 mt-10 text-lg">
       No se encontraron cartas 💔
-    </p>
+    </p> -->
   </section>
 </template>
 
