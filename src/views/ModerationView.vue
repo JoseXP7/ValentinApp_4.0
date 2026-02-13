@@ -105,7 +105,6 @@ const loadCards = async () => {
         )
       `,
       )
-      .eq('status', 'published')
       .order('created_at', { ascending: false })
 
     /* ===== DECANATO FILTER ===== */
