@@ -96,7 +96,7 @@ const loadCards = async () => {
 
   try {
     let query = supabase
-      .from('cards')
+      .from('cards_with_likes')
       .select(
         `
         *,
@@ -141,7 +141,14 @@ const loadCards = async () => {
       return
     }
 
-    cards.value.push(...data)
+    const formatted = (data || []).map((c) => ({
+      ...c,
+      liked: c.liked_by_user,
+      likes_count: Number(c.likes_count) || 0,
+    }))
+
+    cards.value.push(...formatted)
+
     page.value++
   } catch (err) {
     Swal.fire('Error', err.message || 'Error cargando cartas', 'error')
@@ -247,9 +254,9 @@ const handleKeyPress = (e) => {
 
     <!-- 💌 LISTA -->
     <div class="w-full max-w-6xl mt-10 px-6 pb-20">
-      <!-- <Card :cards="cards" /> -->
+      <Card :cards="cards" />
       <!-- Aviso de mantenimiento -->
-      <div
+      <!-- <div
         class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded-lg shadow-md"
         role="alert"
       >
@@ -273,7 +280,7 @@ const handleKeyPress = (e) => {
           Agradecemos la participación en este experimento social para conocer a
           la comunidad de la UCLA 😄.
         </p>
-      </div>
+      </div> -->
       <!-- LOADING -->
       <div
         v-if="loading"

@@ -92,7 +92,7 @@ const loadCards = async () => {
 
   try {
     let query = supabase
-      .from('cards')
+      .from('cards_with_likes')
       .select(
         `
         *,
@@ -136,7 +136,13 @@ const loadCards = async () => {
       return
     }
 
-    cards.value.push(...data)
+    const formatted = (data || []).map((c) => ({
+      ...c,
+      liked: c.liked_by_user,
+      likes_count: Number(c.likes_count) || 0,
+    }))
+
+    cards.value.push(...formatted)
     page.value++
   } catch (err) {
     Swal.fire('Error', err.message || 'Error cargando cartas', 'error')
